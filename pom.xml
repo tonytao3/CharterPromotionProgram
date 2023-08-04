@@ -48,7 +48,16 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
+		<!-- JDK 17 start -->
+		<dependency>
+			<groupId>jakarta.xml.ws</groupId>
+			<artifactId>jakarta.xml.ws-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+		</dependency>
+		<!-- JDK 17 end -->
         <!-- Oracle JDBC driver -->
         <dependency>
             <groupId>com.oracle</groupId>
