@@ -27,6 +27,6 @@ public class ProgramControllerTest {
 
     @Test
     public void testGetTransactions() {
-    	ResponseEntity<List<Object>> resp = programController.getPointsReport();
+    	ResponseEntity<List<Object>> resp = programController.getDollorPointsReport();
     }
 }

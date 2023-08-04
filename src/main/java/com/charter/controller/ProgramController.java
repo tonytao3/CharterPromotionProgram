@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.function.EntityResponse;
 
+import com.charter.dto.PointsReportDto;
 import com.charter.model.Transaction;
 import com.charter.service.PromotionReportService;
 
@@ -25,6 +26,41 @@ public class ProgramController {
 	
 	PromotionReportService promotionReportService;
 	
+	//month point is just 1 dollar for 1 point 
+	@Operation(
+	        operationId = "getPointsReport",
+	        summary = "Get Points Report.",
+	        tags = { "getPointsReport" },
+	        responses = {
+	            @ApiResponse(responseCode = "200", description = "Success", content = {
+	                @Content(mediaType = "application/json", schema = @Schema(implementation = EntityResponse.class))
+	            }),
+	            @ApiResponse(responseCode = "400", description = "Bad Request", content = {
+	                @Content(mediaType = "application/json", schema = @Schema(implementation = EntityResponse.class))
+	            }),
+	            @ApiResponse(responseCode = "422", description = "Source Account NSF", content = {
+	                @Content(mediaType = "application/json", schema = @Schema(implementation = EntityResponse.class))
+	            }),
+	            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {
+	                @Content(mediaType = "application/json", schema = @Schema(implementation = EntityResponse.class))
+	            }),
+	            @ApiResponse(responseCode = "501", description = "Not Implemented", content = {
+	                @Content(mediaType = "application/json", schema = @Schema(implementation = EntityResponse.class))
+	            }),
+	            @ApiResponse(responseCode = "503", description = "Service Unavailable", content = {
+	                @Content(mediaType = "application/json", schema = @Schema(implementation = EntityResponse.class))
+	            })
+	        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/points-report",
+        produces = { "application/json" }
+    )
+    public ResponseEntity<List<PointsReportDto>> getMaonthAveragePoints(){
+    	return promotionReportService.getMaonthAveragePoints();
+    }
+	//month points is the 3 month average
 	@Operation(
         operationId = "getPointsReport",
         summary = "Get Points Report.",
@@ -52,10 +88,10 @@ public class ProgramController {
     )
     @RequestMapping(
         method = RequestMethod.GET,
-        value = "/points-report",
+        value = "/dollar-points",
         produces = { "application/json" }
     )
-    public ResponseEntity<List<Object>> getPointsReport(){
-    	return promotionReportService.getPointsReport();
-    }
+    public ResponseEntity<List<Object>> getDollorPointsReport(){
+    	return promotionReportService.getDollarPointsReport();
+    }	
 }

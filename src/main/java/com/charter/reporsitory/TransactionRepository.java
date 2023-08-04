@@ -16,7 +16,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 			nativeQuery = true)
 	List<Object> findPointsReportData(LocalDateTime startDate, LocalDateTime endDate);
 	
-	@Query(value = "select a.id, a.customer_id, a.transaction_type, NVL( a.paid_amount, 0) as paid_amount, a.transaction_time, a.customer_id, NVL( a.points, 0) as points\r\n"
+	@Query(value = "select a.id, a.customer_id, a.transaction_type, NVL( a.paid_amount, 0) as paid_amount, a.transaction_time,  NVL( a.points, 0) as points\r\n"
 			+ "from transaction a \r\n"
 			+ "where a.transaction_time > ?1 and a.transaction_time < ?2",
 			nativeQuery = true)
