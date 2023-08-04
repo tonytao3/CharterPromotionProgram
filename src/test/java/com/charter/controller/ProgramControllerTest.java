@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import com.charter.model.Transaction;
 import com.charter.service.PromotionReportService;
 
 import jakarta.servlet.http.HttpServletRequest;

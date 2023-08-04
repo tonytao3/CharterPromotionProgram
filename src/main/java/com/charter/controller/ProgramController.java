@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.function.EntityResponse;
 
+import com.charter.model.Transaction;
 import com.charter.service.PromotionReportService;
 
 import io.swagger.v3.oas.annotations.Operation;

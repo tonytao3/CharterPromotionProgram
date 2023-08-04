@@ -39,6 +39,9 @@ public class Transaction {
   
   @Column(name = "paid_amount")
   private int paidAmount;
+  
+  @Column(name = "points")
+  private int points;
 
 }
 

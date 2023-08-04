@@ -28,8 +28,9 @@ public class PromotionReportService {
 		LocalDateTime fromDateTime = LocalDateTime.of(LocalDate.of(2023, 05, 01), LocalTime.of(00, 00));
 		LocalDateTime endDateTime = LocalDateTime.of(LocalDate.of(2023, 07, 31), LocalTime.of(23, 59));
 		logger.info("PromotionReportService::getPointsReport start from: " + fromDateTime);
-	    logger.debug("PromotionReportService::getPointsReport start end at: " + endDateTime);
+	    logger.info("PromotionReportService::getPointsReport start end at: " + endDateTime);
 		List<Object> transactionList = transactionRepository.findPointsReportData(fromDateTime, endDateTime);
+		
 		 
 		return new ResponseEntity<List<Object>> (transactionList, HttpStatus.OK);
     }
