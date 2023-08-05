@@ -1,7 +1,6 @@
 package com.charter.dto;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.time.Month;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,9 +15,8 @@ import lombok.Setter;
 @Builder(toBuilder = true)
 @Setter
 @Getter
-public class PointsMonthSubTotalDto {
-	private String userId;
-	private List<MonthSubTotal> monthSubTotals;
-	private int total;
+public class MonthSubTotal{
+	private int monthTotal;
+	private int year;
+	private Month month;
 }
-

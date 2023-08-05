@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
-import com.charter.model.Transaction;
+import com.charter.dto.PointsMonthSubTotalDto;
 import com.charter.service.PromotionReportService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +27,6 @@ public class ProgramControllerTest {
 
     @Test
     public void testGetTransactions() {
-    	ResponseEntity<List<Object>> resp = programController.getDollorPointsReport();
+    	ResponseEntity<List<PointsMonthSubTotalDto>> resp = programController.getByMonthPoints();
     }
 }

@@ -3,11 +3,12 @@ package com.charter.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.stream.IntStream;
 
 import org.hibernate.query.NativeQuery.ReturnableResultNode;
 import org.slf4j.Logger;
@@ -16,13 +17,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.charter.dto.MonthSubTotal;
 import com.charter.dto.PointsMonthSubTotalDto;
 import com.charter.dto.PointsReportDto;
 import com.charter.model.Transaction;
 import com.charter.reporsitory.TransactionRepository;
 
 import lombok.AllArgsConstructor;
-import oracle.net.aso.s;
 
 @AllArgsConstructor
 @Service
@@ -31,8 +32,8 @@ public class PromotionReportService {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	TransactionRepository transactionRepository;
-    
-	public ResponseEntity<List<PointsReportDto>> getMaonthAveragePoints(){
+     
+    public ResponseEntity<List<PointsMonthSubTotalDto>> getPointsReport(){
 		
 		LocalDateTime fromDateTime = LocalDateTime.of(LocalDate.of(2023, 05, 01), LocalTime.of(00, 00));
 		LocalDateTime endDateTime = LocalDateTime.of(LocalDate.of(2023, 07, 31), LocalTime.of(23, 59));
@@ -47,33 +48,35 @@ public class PromotionReportService {
 				a.setPoints((a.getPaidAmount() - 100)*2);
 			} 
 			return a; }).collect(Collectors.groupingBy(Transaction::getCustomerId));
+		
 		logger.info("groupedTransactionsMap: " + groupedTransactionsMap);
-		List<PointsReportDto> dtoList = new ArrayList<>();
-		PointsReportDto pointsReportDto;
+		
+		List<PointsMonthSubTotalDto> dtoList = new ArrayList<>();
+		PointsMonthSubTotalDto pointsMonthSubTotalDto;
+		List<MonthSubTotal> subTotalList;
+		MonthSubTotal monthSubTotal;
 		for (Map.Entry<String, List<Transaction>> theEntry : groupedTransactionsMap.entrySet()) {
-			pointsReportDto = new PointsReportDto();
-			pointsReportDto.setUserId(theEntry.getKey());
-			int sumValue = 0;
-			for (int i = 0; i < theEntry.getValue().size(); i ++) {
-				sumValue += theEntry.getValue().get(i).getPoints();
+			pointsMonthSubTotalDto = new PointsMonthSubTotalDto();
+			subTotalList = new ArrayList<>();
+			pointsMonthSubTotalDto.setUserId(theEntry.getKey());
+			Integer  sumValue = 0;
+			Map<Object, List<Transaction>> monthSubMap = theEntry.getValue().stream().collect(Collectors.groupingBy( 
+					a-> { return ((Transaction) a).getTransationTime().getMonth();}
+					)); 
+			for (Map.Entry<Object, List<Transaction>> subEntry : monthSubMap.entrySet()) {
+				monthSubTotal = new MonthSubTotal();
+				monthSubTotal.setYear((int) subEntry.getValue().get(0).getTransationTime().getYear());
+				monthSubTotal.setMonth((Month) subEntry.getKey());
+				monthSubTotal.setMonthTotal(subEntry.getValue().stream().mapToInt(a -> {  return (int) a.getPaidAmount();}).sum());
+				sumValue += monthSubTotal.getMonthTotal();
+				subTotalList.add(monthSubTotal);
 			}
-			pointsReportDto.setPointsMonthAverage(sumValue/3);
-			pointsReportDto.setTotal(sumValue);
-			dtoList.add(pointsReportDto);
+			pointsMonthSubTotalDto.setMonthSubTotals(subTotalList);
+			pointsMonthSubTotalDto.setTotal(sumValue);
+			
+			dtoList.add(pointsMonthSubTotalDto);
 		}
 		  
-		return new ResponseEntity<List<PointsReportDto>> (dtoList, HttpStatus.OK);
+		return new ResponseEntity<List<PointsMonthSubTotalDto>> (dtoList, HttpStatus.OK);
     }
-	
-	public ResponseEntity<List<Object>> getDollarPointsReport(){
-		
-		LocalDateTime fromDateTime = LocalDateTime.of(LocalDate.of(2023, 05, 01), LocalTime.of(00, 00));
-		LocalDateTime endDateTime = LocalDateTime.of(LocalDate.of(2023, 07, 31), LocalTime.of(23, 59));
-		logger.info("PromotionReportService::getPointsReport start from: " + fromDateTime);
-	    logger.info("PromotionReportService::getPointsReport start end at: " + endDateTime);
-		List<Object> transactionList = transactionRepository.findPointsReportData(fromDateTime, endDateTime);
-		
-		 
-		return new ResponseEntity<List<Object>> (transactionList, HttpStatus.OK);
-    }	
 }
